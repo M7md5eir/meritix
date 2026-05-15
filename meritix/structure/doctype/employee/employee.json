@@ -71,7 +71,7 @@
   {
    "fetch_from": "position.organization",
    "fieldname": "organization",
-   "fieldtype": "Structure Link",
+   "fieldtype": "Hierarchy Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Organization",

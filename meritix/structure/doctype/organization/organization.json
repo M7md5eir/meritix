@@ -37,7 +37,7 @@
   },
   {
    "fieldname": "parent_organization",
-   "fieldtype": "Structure Link",
+   "fieldtype": "Hierarchy Link",
    "ignore_user_permissions": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,

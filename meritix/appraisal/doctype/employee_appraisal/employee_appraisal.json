@@ -207,7 +207,7 @@
   },
   {
    "fieldname": "organization_copy",
-   "fieldtype": "Structure Link",
+   "fieldtype": "Hierarchy Link",
    "label": "Organization Copy",
    "options": "Organization"
   },

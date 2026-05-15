@@ -43,7 +43,7 @@
   },
   {
    "fieldname": "organization",
-   "fieldtype": "Structure Link",
+   "fieldtype": "Hierarchy Link",
    "in_standard_filter": 1,
    "label": "Organization",
    "link_filters": "[[\"Organization\",\"active\",\"=\",1]]",
