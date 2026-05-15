@@ -457,6 +457,35 @@ def _target_structure_fields(target_doctype: str) -> set[str]:
 	return {fieldname_for(r.structure) for r in rows}
 
 
+def _get_organization_ancestry(organization: str) -> list[dict]:
+	"""Walk up the Organization tree using Nested Set and return ancestor nodes.
+
+	Returns a list of dicts with ``name`` and ``structure`` (the
+	Structure Level name) for every ancestor (inclusive) of the given
+	Organization, ordered from root to leaf.
+	"""
+	lft_rgt = frappe.db.get_value("Organization", organization, ["lft", "rgt"])
+	if not lft_rgt:
+		return []
+
+	lft, rgt = lft_rgt
+	if not lft or not rgt:
+		return []
+
+	return frappe.db.sql(
+		"""
+		SELECT o.name, o.structure,
+		       s.structure AS structure_label
+		FROM `tabOrganization` o
+		LEFT JOIN `tabStructure Level` s ON s.name = o.structure
+		WHERE o.lft <= %s AND o.rgt >= %s
+		ORDER BY o.lft
+		""",
+		(lft, rgt),
+		as_dict=True,
+	)
+
+
 def fill(doc, target_doctype: str) -> None:
 	"""Populate the per-Structure-Level Link fields on one record from its org tree.
 
@@ -474,15 +503,24 @@ def fill(doc, target_doctype: str) -> None:
 	if not organization:
 		return
 
-	from meritix.structure.doctype.employee.employee import get_organization_ancestry
-
-	for node in get_organization_ancestry(organization):
-		structure_label = node.get("structure")
+	for node in _get_organization_ancestry(organization):
+		structure_label = node.get("structure_label")
 		if not structure_label:
 			continue
 		fieldname = fieldname_for(structure_label)
 		if fieldname in target_fields and hasattr(doc, fieldname):
 			doc.set(fieldname, node["name"])
+
+
+def fill_on_save(doc, method=None):
+	"""Hook for doc_events: populate cascade fields when a target DocType is saved."""
+	target_doctype = doc.doctype
+	meta = frappe.get_meta(target_doctype)
+	if not meta.has_field("organization"):
+		return
+	if not _target_structure_fields(target_doctype):
+		return
+	fill(doc, target_doctype)
 
 
 def refill_all_for(target_doctype: str) -> None:

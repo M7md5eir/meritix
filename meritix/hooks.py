@@ -143,7 +143,16 @@ doc_events = {
 	"Custom Field": {
 		"before_save": "meritix.structure.cascade_custom_fields.protect_system_generated_cf",
 		"on_trash": "meritix.structure.cascade_custom_fields.protect_system_generated_cf",
-	}
+	},
+	"Employee": {
+		"before_save": "meritix.structure.cascade_custom_fields.fill_on_save",
+	},
+	"Position": {
+		"before_save": "meritix.structure.cascade_custom_fields.fill_on_save",
+	},
+	"Employee Appraisal": {
+		"before_save": "meritix.structure.cascade_custom_fields.fill_on_save",
+	},
 }
 
 # Scheduled Tasks
