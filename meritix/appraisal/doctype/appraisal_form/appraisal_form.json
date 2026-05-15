@@ -1,0 +1,192 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-05-13 07:56:43.809328",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tab1_sec1",
+  "tab1_sec1_col1",
+  "appraisal_name",
+  "tab1_sec1_col2",
+  "appraisal_period",
+  "tab1_sec1_col3",
+  "appraisee",
+  "tab1_sec1_col4",
+  "amended_from",
+  "link_vyla",
+  "link_tjrt2",
+  "section_break_qjul",
+  "dynamic_link_dqdt",
+  "column_break_vnxd",
+  "column_break_ccpb",
+  "column_break_ydbi",
+  "tab1_sec3",
+  "tab1_sec3_col1",
+  "appraisal",
+  "tab1_sec4",
+  "tab1_sec4_col1",
+  "tab1_sec4_col2",
+  "tab1_sec4_col3",
+  "tab1_sec4_col4",
+  "data_frqi"
+ ],
+ "fields": [
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Appraisal Form",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "tab1_sec1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "tab1_sec1_col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tab1_sec1_col2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tab1_sec1_col3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tab1_sec3",
+   "fieldtype": "Section Break",
+   "hide_border": 1
+  },
+  {
+   "fieldname": "tab1_sec1_col4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tab1_sec4",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "tab1_sec4_col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "data_frqi",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "tab1_sec4_col2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tab1_sec4_col3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tab1_sec4_col4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tab1_sec3_col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "appraisal",
+   "fieldtype": "Table",
+   "options": "Appraisal"
+  },
+  {
+   "fieldname": "appraisal_name",
+   "fieldtype": "Link",
+   "label": "Appraisal Name",
+   "link_filters": "[[\"Appraisal Structure\",\"docstatus\",\"=\",\"1\"]]",
+   "options": "Appraisal Structure"
+  },
+  {
+   "fieldname": "appraisal_period",
+   "fieldtype": "Link",
+   "label": "Appraisal Period",
+   "link_filters": "[[\"Appraisal Period\",\"docstatus\",\"=\",\"1\"]]",
+   "options": "Period"
+  },
+  {
+   "fieldname": "appraisee",
+   "fieldtype": "Link",
+   "label": "Appraisee",
+   "options": "Appraisee"
+  },
+  {
+   "fetch_from": "appraisee.doctype_list",
+   "fieldname": "link_vyla",
+   "fieldtype": "Link",
+   "options": "DocType",
+   "print_hide": 1,
+   "read_only": 1,
+   "report_hide": 1
+  },
+  {
+   "fieldname": "section_break_qjul",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "dynamic_link_dqdt",
+   "fieldtype": "Dynamic Link",
+   "options": "link_vyla"
+  },
+  {
+   "fieldname": "column_break_vnxd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ccpb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ydbi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "appraisee.structure_level",
+   "fieldname": "link_tjrt2",
+   "fieldtype": "Link",
+   "options": "Structure Level",
+   "print_hide": 1,
+   "read_only": 1,
+   "report_hide": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-05-14 12:13:34.848710",
+ "modified_by": "Administrator",
+ "module": "Appraisal",
+ "name": "Appraisal Form",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,203 @@
+{
+ "actions": [],
+ "allow_auto_repeat": 1,
+ "allow_rename": 1,
+ "autoname": "ADK-.######",
+ "creation": "2026-04-18 12:04:35.755836",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_ccdo",
+  "appraisal",
+  "column_break_gjkv",
+  "period",
+  "column_break_iasf",
+  "core_factors",
+  "column_break_ewxz",
+  "amended_from",
+  "section_break_mdxe",
+  "sector",
+  "column_break_ehjs",
+  "bu",
+  "column_break_mhaz",
+  "column_break_xovg",
+  "section_break_oojb",
+  "appraisal_kpis",
+  "section_break_meth",
+  "column_break_fkha",
+  "column_break_kbtw",
+  "column_break_yajw",
+  "column_break_raqu",
+  "score",
+  "final_score"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_ccdo",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "appraisal",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Appraisal",
+   "link_filters": "[[\"Appraisal Structure\",\"docstatus\",\"=\",\"1\"]]",
+   "options": "Appraisal Structure"
+  },
+  {
+   "fieldname": "column_break_gjkv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "period",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Period",
+   "link_filters": "[[\"Appraisal Period\",\"docstatus\",\"=\",\"1\"]]",
+   "options": "Period"
+  },
+  {
+   "default": "Department Goals",
+   "fieldname": "core_factors",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Core Factors",
+   "link_filters": "[[\"Core Factors\",\"name\",\"=\",\"Department Goals\"]]",
+   "not_nullable": 1,
+   "options": "Core Factors",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Department Appraisal",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_iasf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ewxz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bu",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "BU",
+   "link_filters": "[[\"Organization\",\"structure\",\"=\",\"BU\"],[\"Organization\",\"active\",\"=\",1]]",
+   "options": "Organization"
+  },
+  {
+   "fetch_from": "emp_id.sector",
+   "fieldname": "sector",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Sector",
+   "link_filters": "[[\"Organization\",\"structure\",\"=\",\"Sector\"],[\"Organization\",\"active\",\"=\",1]]",
+   "options": "Organization"
+  },
+  {
+   "fieldname": "section_break_oojb",
+   "fieldtype": "Section Break",
+   "hide_border": 1
+  },
+  {
+   "fieldname": "appraisal_kpis",
+   "fieldtype": "Table",
+   "options": "Appraisal"
+  },
+  {
+   "fieldname": "section_break_meth",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_fkha",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_kbtw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_yajw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_raqu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "score",
+   "fieldtype": "Percent",
+   "label": "Score",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "final_score",
+   "fieldtype": "Percent",
+   "label": "Final Score",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_mdxe",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_ehjs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_mhaz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_xovg",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "grid_page_length": 50,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-05-13 09:33:04.004948",
+ "modified_by": "Administrator",
+ "module": "Appraisal",
+ "name": "Department Appraisal",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

@@ -1,0 +1,93 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [
+  {
+   "fieldname": "employee.emp_id",
+   "fieldtype": "Data",
+   "label": "Emp ID",
+   "width": 125
+  },
+  {
+   "fieldname": "employee.emp_name",
+   "fieldtype": "Data",
+   "label": "Name",
+   "width": 250
+  },
+  {
+   "fieldname": "employee.bu",
+   "fieldtype": "Data",
+   "label": "BU",
+   "width": 200
+  },
+  {
+   "fieldname": "bu_app.final_score",
+   "fieldtype": "Float",
+   "label": "BU Score",
+   "width": 150
+  },
+  {
+   "fieldname": "de_app.final_score",
+   "fieldtype": "Float",
+   "label": "Department Score",
+   "width": 150
+  },
+  {
+   "fieldname": "em_app.final_score",
+   "fieldtype": "Float",
+   "label": "Employee Score",
+   "width": 150
+  },
+  {
+   "fieldname": "bu_app.final_score + de_app.final_score + em_app.final_score",
+   "fieldtype": "Float",
+   "label": "Final Score",
+   "width": 200
+  }
+ ],
+ "creation": "2026-05-02 02:03:55.844955",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "Appraisal",
+   "fieldtype": "Link",
+   "label": "Appraisal",
+   "mandatory": 1,
+   "options": "Appraisal Structure",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "Period",
+   "fieldtype": "Link",
+   "label": "Period",
+   "mandatory": 1,
+   "options": "Appraisal Period",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "BU",
+   "fieldtype": "Link",
+   "label": "BU",
+   "mandatory": 1,
+   "options": "BU",
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": null,
+ "modified": "2026-05-02 02:39:43.208768",
+ "modified_by": "Administrator",
+ "module": "Appraisal",
+ "name": "Appraisal Result",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\r\n    employee.emp_id,\r\n    employee.emp_name,\r\n    employee.bu,\r\n    bu_app.final_score,\r\n    de_app.final_score,\r\n    em_app.final_score,\r\n    bu_app.final_score + de_app.final_score + em_app.final_score\r\nFROM `tabEmployee` employee\r\nLEFT JOIN `tabDepartment Appraisal` de_app\r\n    ON employee.bu = de_app.bu\r\nLEFT JOIN `tabBU Appraisal` bu_app\r\n    ON employee.bu = bu_app.bu\r\n    AND bu_app.period = de_app.period\r\n    AND bu_app.appraisal = de_app.appraisal\r\nLEFT JOIN `tabEmployee Appraisal` em_app\r\n    ON employee.emp_id = em_app.emp_id\r\n    AND em_app.period = de_app.period\r\n    AND em_app.appraisal = de_app.appraisal\r\nWHERE de_app.docstatus = 1\r\n  AND em_app.docstatus = 1\r\n  AND bu_app.docstatus = 1\r\n  AND em_app.appraisal = %(Appraisal)s\r\n  AND em_app.period = %(Period)s\r\n  AND employee.bu = %(BU)s",
+ "ref_doctype": "Employee Appraisal",
+ "report_name": "Appraisal Result",
+ "report_type": "Query Report",
+ "roles": [],
+ "timeout": 0
+}
