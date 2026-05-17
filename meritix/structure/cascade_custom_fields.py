@@ -158,25 +158,11 @@ def _field_definition(
 
 
 def _apply_df(cf, df) -> None:
-	"""Update mutable Custom Field attributes from ``df`` in place.
-
-	Frappe blocks fieldtype changes on existing Custom Fields, so when
-	migrating (e.g. Link → Data) we delete the old CF and recreate it.
-	"""
-	if cf.get("fieldtype") != df.get("fieldtype"):
-		target_doctype = cf.dt
-		desired_name = cf.name
-		cf.delete(ignore_permissions=True)
-		create_custom_field(target_doctype, df, is_system_generated=True)
-		autoname = _autonamed_cf_name(target_doctype, df["fieldname"])
-		if autoname != desired_name and frappe.db.exists("Custom Field", autoname):
-			frappe.rename_doc("Custom Field", autoname, desired_name, force=True, show_alert=False)
-		frappe.clear_cache(doctype=target_doctype)
-		return
-
+	"""Update mutable Custom Field attributes from ``df`` in place."""
 	dirty = False
 	for key in (
 		"label",
+		"fieldtype",
 		"insert_after",
 		"options",
 		"hidden",
@@ -188,10 +174,6 @@ def _apply_df(cf, df) -> None:
 		if cf.get(key) != df.get(key):
 			cf.set(key, df.get(key))
 			dirty = True
-	# Clear link_filters when migrating from Link to Data.
-	if cf.get("link_filters"):
-		cf.set("link_filters", None)
-		dirty = True
 	if dirty:
 		cf.save(ignore_permissions=True)
 
