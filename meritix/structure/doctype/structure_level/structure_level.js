@@ -63,8 +63,15 @@ function _set_insert_after_options(frm, row, options, evaluate) {
 		let field = grid_row.get_field("insert_after");
 		if (field) {
 			field.set_data(options);
-			if (evaluate && field.awesomplete) {
-				field.awesomplete.evaluate();
+			if (field.awesomplete) {
+				if (evaluate) {
+					field.awesomplete.evaluate();
+				} else if (field.$input && field.$input.val()) {
+					// awesomplete auto-evaluates when list is set on a
+					// focused input; close the dropdown when the field
+					// already has a value (Link field behavior).
+					field.awesomplete.close();
+				}
 			}
 		}
 	}
