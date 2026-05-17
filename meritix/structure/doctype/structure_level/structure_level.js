@@ -21,7 +21,7 @@ frappe.ui.form.on("Structure Level", {
 				if (!row_name) return;
 				let row = locals["Structure DF Creation"][row_name];
 				if (row && row.target_doctype) {
-					_load_insert_after_options(frm, row);
+					_load_insert_after_options(frm, row, true);
 				}
 			});
 	}
@@ -46,22 +46,21 @@ frappe.ui.form.on("Structure DF Creation", {
 	}
 });
 
-function _load_insert_after_options(frm, row) {
+function _load_insert_after_options(frm, row, evaluate) {
 	frappe.model.with_doctype(row.target_doctype, function () {
 		let meta = frappe.get_meta(row.target_doctype);
 		let options = meta.fields.map(f => f.fieldname);
-		_set_insert_after_options(frm, row, options);
+		_set_insert_after_options(frm, row, options, evaluate);
 	});
 }
 
-function _set_insert_after_options(frm, row, options) {
+function _set_insert_after_options(frm, row, options, evaluate) {
 	let grid_row = frm.fields_dict.applies_to.grid.grid_rows_by_docname[row.name];
 	if (grid_row) {
 		let field = grid_row.get_field("insert_after");
 		if (field) {
 			field.set_data(options);
-			// Re-evaluate so the dropdown appears immediately after data is set
-			if (field.awesomplete) {
+			if (evaluate && field.awesomplete) {
 				field.awesomplete.evaluate();
 			}
 		}
