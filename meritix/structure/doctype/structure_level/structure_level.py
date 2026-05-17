@@ -31,27 +31,33 @@ class StructureLevel(LifecycleMixin, Document):
 		if not self.structure:
 			return
 
-		current_targets = set()
-		for row in self.applies_to or []:
-			if not row.target_doctype:
-				continue
-			cascade.ensure(self, row)
-			current_targets.add(row.target_doctype)
+		# Suppress toast notifications from Custom Field create/update/delete
+		prev = frappe.flags.mute_messages
+		frappe.flags.mute_messages = True
+		try:
+			current_targets = set()
+			for row in self.applies_to or []:
+				if not row.target_doctype:
+					continue
+				cascade.ensure(self, row)
+				current_targets.add(row.target_doctype)
 
-		previous_targets = {
-			r.target_doctype
-			for r in frappe.get_all(
-				"Custom Field",
-				filters={
-					"is_system_generated": 1,
-					"options": "Organization",
-					"fieldname": cascade.fieldname_for(self.structure),
-				},
-				fields=["dt as target_doctype"],
-			)
-		}
-		for removed_dt in previous_targets - current_targets:
-			cascade.remove(self.structure, removed_dt)
+			previous_targets = {
+				r.target_doctype
+				for r in frappe.get_all(
+					"Custom Field",
+					filters={
+						"is_system_generated": 1,
+						"options": "Organization",
+						"fieldname": cascade.fieldname_for(self.structure),
+					},
+					fields=["dt as target_doctype"],
+				)
+			}
+			for removed_dt in previous_targets - current_targets:
+				cascade.remove(self.structure, removed_dt)
+		finally:
+			frappe.flags.mute_messages = prev
 
 	def _remove_custom_fields(self):
 		"""Remove all Custom Fields owned by this Structure Level."""

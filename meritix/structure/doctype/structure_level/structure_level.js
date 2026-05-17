@@ -16,12 +16,15 @@ frappe.ui.form.on("Structure Level", {
 		frm.fields_dict.applies_to.grid.wrapper
 			.off("focus.insert_after")
 			.on("focus.insert_after", ".frappe-control[data-fieldname='insert_after'] input", function () {
-				let $row = $(this).closest(".rows .frappe-control").closest("[data-name]");
+				let $input = $(this);
+				let $row = $input.closest(".rows .frappe-control").closest("[data-name]");
 				let row_name = $row.data("name");
 				if (!row_name) return;
 				let row = locals["Structure DF Creation"][row_name];
 				if (row && row.target_doctype) {
-					_load_insert_after_options(frm, row, true);
+					// Only show dropdown when field is empty (Link field behavior)
+					let show = !$input.val();
+					_load_insert_after_options(frm, row, show);
 				}
 			});
 	}
