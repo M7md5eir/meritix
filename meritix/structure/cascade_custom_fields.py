@@ -4,13 +4,16 @@
 """Manage per-Structure Level Custom Fields on any target DocType.
 
 Each Structure Level record (Company, BU, Sub BU, Sector, ...) may opt to
-materialise as a read-only ``Link`` Custom Field (pointing to Organization)
-on one or more target DocTypes -- declared via the ``Structure Level.applies_to``
-child table. Each row in ``applies_to`` carries the target DocType, an explicit
+materialise as a read-only ``Data`` Custom Field on one or more target
+DocTypes -- declared via the ``Structure Level.applies_to`` child table.
+Each row in ``applies_to`` carries the target DocType, an explicit
 ``insert_after`` anchor, and per-row visibility flags (``hidden``,
 ``in_list_view``, ``in_standard_filter``, ``print_hide``).
 The cascade walks up the Organization tree and populates each
-per-Structure-Level field with the ancestor Organization's name.
+per-Structure-Level field with the ancestor Organization record name.
+Data fields are used (rather than Link) because Frappe's query builder
+creates a single JOIN per linked DocType, so multiple Link→Organization
+columns in the list view would all resolve to the same title.
 
 Public surface:
     ensure(structure_doc, target_row)  -- create/update one CF.
@@ -145,7 +148,7 @@ def _field_definition(
 	return {
 		"fieldname": fieldname_for(structure_label),
 		"label": structure_label,
-		"fieldtype": "Link",
+		"fieldtype": "Data",
 		"options": "Organization",
 		"read_only": 1,
 		"hidden": flags["hidden"],
@@ -158,11 +161,25 @@ def _field_definition(
 
 
 def _apply_df(cf, df) -> None:
-	"""Update mutable Custom Field attributes from ``df`` in place."""
+	"""Update mutable Custom Field attributes from ``df`` in place.
+
+	Frappe blocks fieldtype changes on save, so we delete and recreate
+	when the fieldtype differs.
+	"""
+	if cf.get("fieldtype") != df.get("fieldtype"):
+		target_doctype = cf.dt
+		desired_name = cf.name
+		cf.delete(ignore_permissions=True)
+		create_custom_field(target_doctype, df, is_system_generated=True)
+		autoname = _autonamed_cf_name(target_doctype, df["fieldname"])
+		if autoname != desired_name and frappe.db.exists("Custom Field", autoname):
+			frappe.rename_doc("Custom Field", autoname, desired_name, force=True, show_alert=False)
+		frappe.clear_cache(doctype=target_doctype)
+		return
+
 	dirty = False
 	for key in (
 		"label",
-		"fieldtype",
 		"insert_after",
 		"options",
 		"hidden",
@@ -747,6 +764,30 @@ def search_meritix_doctypes(
 		as_list=True,
 	)
 	return rows
+
+
+@frappe.whitelist()
+def get_organization_titles(names) -> dict[str, str]:
+	"""Return a mapping of Organization names to their display titles.
+
+	Used by the client-side list/form formatters to resolve ORG-xxx
+	record names stored in cascade Data fields into human-readable
+	Organization titles.
+	"""
+	import json
+
+	if isinstance(names, str):
+		names = json.loads(names)
+	if not names:
+		return {}
+	return dict(
+		frappe.get_all(
+			"Organization",
+			filters={"name": ("in", names)},
+			fields=["name", "organization"],
+			as_list=True,
+		)
+	)
 
 
 @frappe.whitelist()
