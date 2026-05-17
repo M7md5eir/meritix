@@ -149,6 +149,7 @@ doc_events = {
 	},
 	"Position": {
 		"before_save": "meritix.structure.cascade_custom_fields.fill_on_save",
+		"on_update": "meritix.structure.cascade_custom_fields.propagate_position_change",
 	},
 	"Employee Appraisal": {
 		"before_save": "meritix.structure.cascade_custom_fields.fill_on_save",

@@ -537,6 +537,44 @@ def fill_on_save(doc, method=None):
 	fill(doc, target_doctype)
 
 
+def propagate_position_change(doc, method=None):
+	"""Hook for Position.on_update: propagate organization changes to linked Employees.
+
+	When a Position's ``organization`` changes, every Employee whose
+	``position`` points to this Position must have its ``organization``
+	(and all cascade fields) updated to match. Employee.organization
+	is declared as ``fetch_from: position.organization`` but Frappe's
+	fetch_from only fires on the client — this hook handles the backend
+	propagation for existing records.
+	"""
+	if not doc.has_value_changed("organization"):
+		return
+
+	new_org = doc.organization
+
+	employees = frappe.get_all(
+		"Employee",
+		filters={"position": doc.name},
+		pluck="name",
+	)
+	if not employees:
+		return
+
+	placeholders = ", ".join(["%s"] * len(employees))
+	frappe.db.sql(
+		f"UPDATE `tabEmployee` SET organization = %s WHERE name IN ({placeholders})",
+		(new_org, *employees),
+	)
+
+	if _target_structure_fields("Employee"):
+		for emp_name in employees:
+			emp = frappe.get_doc("Employee", emp_name)
+			fill(emp, "Employee")
+			emp.db_update()
+
+	frappe.db.commit()
+
+
 def refill_all_for(target_doctype: str) -> None:
 	"""Recompute the cascade fields for every record of ``target_doctype``.
 
