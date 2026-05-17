@@ -4,13 +4,13 @@
 """Manage per-Structure Level Custom Fields on any target DocType.
 
 Each Structure Level record (Company, BU, Sub BU, Sector, ...) may opt to
-materialise as a read-only ``Data`` Custom Field on one or more target
-DocTypes -- declared via the ``Structure Level.applies_to`` child table.
-Each row in ``applies_to`` carries the target DocType, an explicit
+materialise as a read-only ``Link`` Custom Field (pointing to Organization)
+on one or more target DocTypes -- declared via the ``Structure Level.applies_to``
+child table. Each row in ``applies_to`` carries the target DocType, an explicit
 ``insert_after`` anchor, and per-row visibility flags (``hidden``,
 ``in_list_view``, ``in_standard_filter``, ``print_hide``).
 The cascade walks up the Organization tree and populates each
-per-Structure-Level field with the Organization's display name.
+per-Structure-Level field with the ancestor Organization's name.
 
 Public surface:
     ensure(structure_doc, target_row)  -- create/update one CF.
@@ -145,7 +145,7 @@ def _field_definition(
 	return {
 		"fieldname": fieldname_for(structure_label),
 		"label": structure_label,
-		"fieldtype": "Data",
+		"fieldtype": "Link",
 		"options": "Organization",
 		"read_only": 1,
 		"hidden": flags["hidden"],
@@ -449,7 +449,7 @@ def _bulk_refill(target_doctype: str, organization_filter: list[str] | None = No
 			INNER JOIN `tabOrganization` ancestor
 				ON ancestor.lft <= leaf.lft AND ancestor.rgt >= leaf.rgt
 				AND ancestor.structure = %s
-			SET rec.`{fieldname}` = ancestor.organization
+			SET rec.`{fieldname}` = ancestor.name
 			WHERE 1=1{where_extra}
 		"""
 		frappe.db.sql(update_sql, (pair.structure_name, *filter_params))
@@ -490,7 +490,7 @@ def _get_organization_ancestry(organization: str) -> list[dict]:
 
 	return frappe.db.sql(
 		"""
-		SELECT o.name, o.organization AS organization_title, o.structure,
+		SELECT o.name, o.structure,
 		       s.structure AS structure_label
 		FROM `tabOrganization` o
 		LEFT JOIN `tabStructure Level` s ON s.name = o.structure
@@ -525,7 +525,7 @@ def fill(doc, target_doctype: str) -> None:
 			continue
 		fieldname = fieldname_for(structure_label)
 		if fieldname in target_fields and hasattr(doc, fieldname):
-			doc.set(fieldname, node.get("organization_title") or node["name"])
+			doc.set(fieldname, node["name"])
 
 
 def fill_on_save(doc, method=None):
