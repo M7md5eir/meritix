@@ -170,7 +170,7 @@ def _apply_df(cf, df) -> None:
 		target_doctype = cf.dt
 		desired_name = cf.name
 		cf.delete(ignore_permissions=True)
-		create_custom_field(target_doctype, df, is_system_generated=True)
+		create_custom_field(target_doctype, df, ignore_validate=True, is_system_generated=True)
 		autoname = _autonamed_cf_name(target_doctype, df["fieldname"])
 		if autoname != desired_name and frappe.db.exists("Custom Field", autoname):
 			frappe.rename_doc("Custom Field", autoname, desired_name, force=True, show_alert=False)
@@ -244,7 +244,7 @@ def ensure(structure_doc, target_row) -> None:
 		frappe.rename_doc("Custom Field", legacy, desired, force=True, show_alert=False)
 		_apply_df(frappe.get_doc("Custom Field", desired), df)
 	else:
-		create_custom_field(target_doctype, df, is_system_generated=True)
+		create_custom_field(target_doctype, df, ignore_validate=True, is_system_generated=True)
 		if legacy != desired and frappe.db.exists("Custom Field", legacy):
 			frappe.rename_doc("Custom Field", legacy, desired, force=True, show_alert=False)
 
